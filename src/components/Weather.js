@@ -1,31 +1,61 @@
 import React from "react";
 
-const Weather = props => (
-    <div className="weather__info">
-        {
-            props.city && props.country && <p className="weather__key"> Location:
-                <span className="weather__value"> {props.city}, {props.country}</span>
-            </p>
+class Weather extends React.Component {
+    getWeatherUnitEntity = (type) => {
+        let weatherUnit = this.props.weatherUnit;
+
+        switch (type) {
+            case 'reverse':
+                weatherUnit = weatherUnit === 'metric' ? String.fromCharCode(8457) : String.fromCharCode(8451);
+                break;
+            default:
+                weatherUnit = weatherUnit === 'metric' ? String.fromCharCode(8451) : String.fromCharCode(8457);
         }
-        {
-            props.temperature && <p className="weather__key"> Temperature:
-                <span className="weather__value"> {props.temperature}	</span>
-            </p>
-        }
-        {
-            props.humidity && <p className="weather__key"> Humidity:
-                <span className="weather__value"> {props.humidity} </span>
-            </p>
-        }
-        {
-            props.description && <p className="weather__key"> Conditions:
-                <span className="weather__value text-capitalize"> {props.description} </span>
-            </p>
-        }
-        {
-            props.error && <p className="weather__error">{props.error}</p>
-        }
-    </div>
-);
+
+        return weatherUnit;
+    };
+
+    render() {
+        return (
+            <div className="weather__info">
+                {
+                    this.props.city && this.props.country && <p className="weather__key"> Location:
+                        <span className="weather__value">
+                        {this.props.city}, {this.props.country}
+                    </span>
+                    </p>
+                }
+                {
+                    this.props.temperature && <p className="weather__key"> Temperature:
+                        <span
+                            className="weather__value mr-2"> {this.props.temperature} {this.getWeatherUnitEntity()}
+                    </span>
+                        <button type="button" className="weather__key-button" onClick={this.props.switchWeatherUnit}>Switch
+                            to {this.getWeatherUnitEntity('reverse')}</button>
+                    </p>
+                }
+                {
+                    this.props.humidity && <p className="weather__key"> Humidity:
+                        <span className="weather__value">
+                        {this.props.humidity}
+                    </span>
+                    </p>
+                }
+                {
+                    this.props.description && <p className="weather__key"> Conditions:
+                        <span className="weather__value text-capitalize">
+                        {this.props.description}
+                    </span>
+                    </p>
+                }
+                {
+                    this.props.error && <p className="weather__error">
+                        {this.props.error}
+                    </p>
+                }
+            </div>
+        )
+    }
+};
 
 export default Weather;

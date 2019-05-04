@@ -59,7 +59,7 @@ input[type="text"] {
     background-color: transparent;
     border: 0;
     border-bottom: solid 1px #f16051;
-    width: 30%;
+    width: 25%;
     padding-bottom: 4px;
     color: #fff !important;
     font-weight: lighter;
@@ -96,6 +96,11 @@ button:active {
     outline: none;
 }
 
+button:disabled {
+    opacity: .65;
+    cursor: unset;
+}
+
 .weather__info {
     width: 60%;
     font-size: 20px;
@@ -108,6 +113,10 @@ button:active {
     border-bottom: solid 2px rgba(255, 255, 255, 0.06);
     padding: 20px 0 20px 0;
     font-weight: 400;
+}
+
+.weather__key-button {
+    padding: 4px 12px;
 }
 
 .weather__key:last-child {

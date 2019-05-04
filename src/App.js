@@ -6,33 +6,42 @@ import Weather from "./components/Weather";
 const API_KEY = process.env.REACT_APP_OPENWEATHER_API_KEY;
 
 class App extends React.Component {
-    state = {
-        current: {
-            temperature: undefined,
-            city: undefined,
-            country: undefined,
-            humidity: undefined,
-            description: undefined,
-            error: undefined
-        },
-        previous: {
-            temperature: undefined,
-            city: undefined,
-            country: undefined,
-            humidity: undefined,
-            description: undefined,
-            error: undefined
-        },
-        searchCounter: 0,
-        showPrevious: false
-    };
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            weatherUnit: 'imperial',
+            current: {
+                temperature: undefined,
+                city: undefined,
+                country: undefined,
+                humidity: undefined,
+                description: undefined,
+                error: undefined
+            },
+            previous: {
+                temperature: undefined,
+                city: undefined,
+                country: undefined,
+                humidity: undefined,
+                description: undefined,
+                error: undefined
+            },
+            searchCounter: 0,
+            showPrevious: false
+        };
+
+         this.weatherFormRef = React.createRef();
+    }
+
 
     getWeather = async (e) => {
         e.preventDefault();
+        console.log('caca');
         const city = e.target.elements.city.value;
         const country = e.target.elements.country.value;
 
-        const api_call = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${API_KEY}&units=metric`);
+        const api_call = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${API_KEY}&units=${this.state.weatherUnit}`);
 
         const data = await api_call.json();
 
@@ -74,7 +83,29 @@ class App extends React.Component {
         })
     };
 
+    handleSwitchWeatherUniBtnClick = (e) => {
+        let weatherUnit = this.state.weatherUnit;
+
+        if (weatherUnit === 'metric') {
+            weatherUnit = 'imperial'
+        }
+
+        if (weatherUnit === 'imperial') {
+            weatherUnit = 'metric'
+        }
+
+        this.setState({
+            weatherUnit: weatherUnit
+        });
+
+        console.log(this.weatherFormRef.current);
+        // this.weatherFormRef.current.form.current.dispatchEvent(new Event('submit'));
+        this.weatherFormRef.current.form.current.submit();
+    };
+
     render() {
+        const showPrevious = this.state.showPrevious;
+
         return (
             <div>
                 <div className="wrapper">
@@ -86,14 +117,21 @@ class App extends React.Component {
                                 </div>
 
                                 <div className="col-7 form-container">
-                                    <Form getWeather={this.getWeather} showPrevious={this.handlePreviousBtnClick}/>
+                                    <Form
+                                        searchCounter={this.state.searchCounter}
+                                        getWeather={this.getWeather}
+                                        showPrevious={this.handlePreviousBtnClick}
+                                        ref={this.weatherFormRef}
+                                    />
                                     <Weather
-                                        temperature={this.state.showPrevious ? this.state.previous.temperature : this.state.current.temperature}
-                                        city={this.state.showPrevious ? this.state.previous.city : this.state.current.city}
-                                        country={this.state.showPrevious ? this.state.previous.country : this.state.current.country}
-                                        humidity={this.state.showPrevious ? this.state.previous.humidity : this.state.current.humidity}
-                                        description={this.state.showPrevious ? this.state.previous.description : this.state.current.description}
+                                        temperature={(showPrevious ? this.state.previous : this.state.current).temperature}
+                                        weatherUnit={this.state.weatherUnit}
+                                        city={(showPrevious ? this.state.previous : this.state.current).city}
+                                        country={(showPrevious ? this.state.previous : this.state.current).country}
+                                        humidity={(showPrevious ? this.state.previous : this.state.current).humidity}
+                                        description={(showPrevious ? this.state.previous : this.state.current).description}
                                         error={this.state.current.error}
+                                        switchWeatherUnit={this.handleSwitchWeatherUniBtnClick}
                                     />
                                 </div>
                             </div>
